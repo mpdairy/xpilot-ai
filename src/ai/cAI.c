@@ -73,7 +73,7 @@
 #include "../common/setup.h"
 #include "configure.h"
 #include "netclient.h"
-#include "cAI.h"
+#include "xpilotai.h"
 #define BASE_X(i)	(((i % x_areas) << 8) + ext_view_x_offset)
 #define BASE_Y(i)	((ext_view_height - 1 - (((i / x_areas) % y_areas) << 8)) - ext_view_y_offset)
 #define PI_AI 3.1415926536
@@ -1739,16 +1739,18 @@ void prepareShips() {
 }
 //End of methods to help AI_loop -JNE
 //THE L00PZ -EGG
-__attribute__((weak)) void AI_loop() {
-    //OVERRIDE ME -EGG
-}
+/* __attribute__((weak)) void AI_loop() { */
+/*     //OVERRIDE ME -EGG */
+/* } */
 //END L00PZ -EGG
+void (*AI_callback_loop)() = NULL;
+
 //Inject our loop -EGG
-void injectAI() { 
+void injectAI() {
     if (AI_delaystart > 2) { 
         prepareShips();
         prepareShots();
-        AI_loop();
+        if (AI_callback_loop) AI_callback_loop();
     }
     else {
         if (AI_delaystart == -5) Net_talk("/get shotspeed");
@@ -1764,9 +1766,11 @@ void injectAI() {
 //Run xpilot without a window -EGG
 void headlessMode() {headless = 1;}
 //Initializes Xpilot-AI and starts the client. Called as start(int,String[]). -EGG
-int start(int argc, char* argv[]) {
+// int start(int argc, char* argv[]) {
+int start(void (*AI_callback)(), int argc, char* argv[]) {
     int j,k;
     ship_t theShip;
+    AI_callback_loop = AI_callback;
     theShip.x=-1;
     theShip.y=-1;
     theShip.dir=-1;

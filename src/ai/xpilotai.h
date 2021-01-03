@@ -1,6 +1,9 @@
 //Justin Anderson - May 2012
 //extern method declarations -JTO
-	extern int start(int argc, char* argv[]); // Initialize AI interface and start XPilot -JRA
+// Initialize AI interface and start XPilot -JRA
+extern int start(void (*AI_callback)(), int argc, char* argv[]); 
+// extern int start(int argc, char* argv[]);
+
   extern void headlessMode(); // Run xpilot without a window -EGG
 // Movement methods -JNE
 	extern void turnLeft(int flag); // Turns left -JRA
